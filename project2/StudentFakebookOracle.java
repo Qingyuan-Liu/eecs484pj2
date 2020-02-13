@@ -125,8 +125,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
         ResultSet rst = stmt.executeQuery(
             "SELECT FIRST_NAME FROM "
             + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
-            + "(" +"SELECT MAX(LENGTH(FIRST_NAME)) FROM "+UsersTable
-            +" )" + " ORDER BY 1");
+            + " ( " +" SELECT MAX(LENGTH(FIRST_NAME)) FROM "+UsersTable
+            +" ) " + " ORDER BY 1");
         
         while (rst.next()){
             info.addLongName(rst.getString(1));
@@ -134,8 +134,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
         rst= stmt.executeQuery(
             "SELECT FIRST_NAME FROM "
             + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
-            + "(" + "SELECT MIN(LENGTH(FIRST_NAME)) FROM "+UsersTable
-            +")"+ " ORDER BY 1");
+            + "(" + " SELECT MIN(LENGTH(FIRST_NAME)) FROM "+UsersTable
+            +") "+ " ORDER BY 1");
         
         while (rst.next()){
             info.addShortName(rst.getString(1));
@@ -143,7 +143,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
 
         rst = stmt.executeQuery(
             "SELECT MAX(COUNT(FIRST_NAME)) FROM "+
-            UsersTable + " GROUP BY FIRST_NAME;"
+            UsersTable + " GROUP BY FIRST_NAME"
         );
         int maxNum = 0;
         while (rst.next())  {
