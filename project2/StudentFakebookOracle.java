@@ -217,8 +217,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo u1 = new UserInfo(9, "Meryl", "Streep"); UserInfo u2 = new
              * UserInfo(104, "Tom", "Hanks"); results.add(u1); results.add(u2);
              */
-            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME" + " FROM " + UsersTable  + " MINUS " + " SELECT USER_ID " +
-            "FROM "+ CurrentCitiesTable + " P1, " +  HometownCitiesTable +" P2" + " WHERE P1.USER_ID = P2.USER_ID AND P1.CURRENT_CITY_ID=P2.HOMETOWN_CITY_ID ORDER BY 1");
+            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME" + " FROM " + UsersTable  + " MINUS " + " SELECT U.USER_ID, " + " U.FIRST_NAME, " + "U.LAST_NAME " +
+            "FROM "+ CurrentCitiesTable + " P1, " +  HometownCitiesTable +" P2, " + UsersTable + " U " + " WHERE P1.USER_ID = P2.USER_ID AND U.USER_ID = P1.USER_ID AND P1.CURRENT_CITY_ID=P2.HOMETOWN_CITY_ID ORDER BY 1");
             
             while(rst.next()){
                 results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
