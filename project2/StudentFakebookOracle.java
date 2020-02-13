@@ -259,8 +259,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
             "FROM " + PhotosTable +" P, " + AlbumsTable +" A, " + TagsTable + " T2, " + UsersTable + " U, "+
             "(SELECT * FROM((SELECT T1.TAG_PHOTO_ID, COUNT(T1.TAG_SUBJECT_ID) AS C FROM "+ TagsTable + " T1 "+
             "GROUP BY T1.TAG_PHOTO_ID ORDER BY COUNT(T1.TAG_SUBJECT_ID) DESC, T1.TAG_PHOTO_ID) TMP) WHERE ROWNUM<= " + 
-            num + ")" + "TMP1" + "WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
-            "ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
+            num + ")" + " TMP1 " + " WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
+            " ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
             
             TaggedPhotoInfo tp=null;
             long p_id=0;
