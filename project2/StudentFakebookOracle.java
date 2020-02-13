@@ -186,7 +186,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo u1 = new UserInfo(15, "Abraham", "Lincoln"); UserInfo u2 = new
              * UserInfo(39, "Margaret", "Thatcher"); results.add(u1); results.add(u2);
              */
-            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + " WHERE USER_ID NOT IN " +
+            ResultSet rst = stmt.executeQuery("SELECT DISTINCT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + " WHERE USER_ID NOT IN " +
             " ( SELECT USER1_ID FROM " +  FriendsTable  + " UNION " + "SELECT USER2_ID FROM " +  FriendsTable + ")");
             while(rst.next()){
                 results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
@@ -257,7 +257,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
              */
             ResultSet rst = stmt.executeQuery("SELECT P.PHOTO_ID, P.ALBUM_ID, A.ALBUM_NAME, P.PHOTO_LINK, U.USER_ID, U.FIRST_NAME, U.LAST_NAME "+
             "FROM " + PhotosTable +" P, " + AlbumsTable +" A, " + TagsTable + " T2, " + UsersTable + " U, "+
-            "SELECT * FROM((SELECT T1.TAG_PHOTO_ID, COUNT(T1.TAG_SUBJECT_ID) AS C FROM "+ TagsTable + " T1 "+
+            "(SELECT * FROM((SELECT T1.TAG_PHOTO_ID, COUNT(T1.TAG_SUBJECT_ID) AS C FROM "+ TagsTable + " T1 "+
             "GROUP BY T1.TAG_PHOTO_ID ORDER BY COUNT(T1.TAG_SUBJECT_ID) DESC, T1.TAG_PHOTO_ID) TMP) WHERE ROWNUM<= " + 
             num + ")" + "TMP1" + "WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
             "ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
