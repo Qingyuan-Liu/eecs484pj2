@@ -189,7 +189,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + "WHERE USER_ID NOT IN" +
             " ( SELECT USER1_ID FROM " +  FriendsTable  + " UNION " + "SELECT USER2_ID FROM " +  FriendsTable + ")");
             while(rst.next()){
-                result.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
+                results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
             }
 
             rst.close();
@@ -221,7 +221,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             "FROM "+ CurrentCitiesTable + " P1," +  HometownCitiesTable +" P2" + " WHERE P1.USER_ID = P2.USER_ID AND P1.CURRENT_CITY_ID=P2.CURRENT_CITY_ID ORDER BY 1");
             
             while(rst.next()){
-                result.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
+                results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
             }
             rst.close();
             stmt.close();
@@ -262,12 +262,13 @@ public final class StudentFakebookOracle extends FakebookOracle {
             num + ")" + "TMP1" + "WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
             "ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
             
-            List<Long> array = new ArrayList<Long> ();
+            long p_id=0;
             while(rst.next()){
-                if(array.contains(rst.getLong(1))){
-                    result.add(new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7)));
+                if(p_id==rst.getLong(1)){
+                    results.add(new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7)));
                 }else{
-                    result.add(new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4)));
+                    p_id=rst.getLong(1);
+                    results.add(new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4)));
                 }
             }
 
@@ -469,7 +470,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
                 UserInfo u1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                 UserInfo u2 = new UserInfo(rst.getLong(4), rst.getString(5), rst.getString(6));
                 SiblingInfo si = new SiblingInfo(u1, u2);
-                SiblingInfo(u1, u2); results.add(si);
+                results.add(si);
             }
 
             rst.close();
