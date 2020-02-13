@@ -265,7 +265,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             long p_id=0;
             while(rst.next()){
                 if(p_id==rst.getLong(1)){
-                    results.add(new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7)));
+                    results.addTaggedUser(new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7)));
                 }else{
                     p_id=rst.getLong(1);
                     results.add(new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4)));
