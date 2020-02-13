@@ -274,6 +274,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
                         results.add(tp);
                     }
                     PhotoInfo p = new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4));
+                    UserInfo u = new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7));
+                    tp.addTaggedUser(u);
                     tp= new TaggedPhotoInfo(p);
                 }
                 
