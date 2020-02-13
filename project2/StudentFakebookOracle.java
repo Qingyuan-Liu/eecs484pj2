@@ -270,7 +270,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
                     tp.addTaggedUser(u);
                 }else{
                     p_id=rst.getLong(1);
-                    PhotoInfo p = new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4)));
+                    PhotoInfo p = new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4));
                     tp= new TaggedPhotoInfo(p);
                 }
             }
