@@ -413,7 +413,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
              FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID) ORDER BY YEAR_OF_BIRTH DESC, MONTH_OF_BIRTH DESC, DAY_OF_BIRTH DESC, 1 DESC");
             
-             UserInfo old;
+             UserInfo old=null;
              while(rst.next()){
                  if(rst.isFirst()){
                     old = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
@@ -425,7 +425,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
              FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID) ORDER BY YEAR_OF_BIRTH, MONTH_OF_BIRTH, MONTH_OF_BIRTH, 1 DESC");
 
-             UserInfo youngest;
+             UserInfo youngest=null;
              while(rst.next()){
                 if(rst.isFirst()){
                     youngest = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
