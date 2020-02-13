@@ -262,13 +262,16 @@ public final class StudentFakebookOracle extends FakebookOracle {
             num + ")" + "TMP1" + "WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
             "ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
             
+            TaggedPhotoInfo tp=null;
             long p_id=0;
-            while(rst.next()){
+            while(rst.next()){ 
                 if(p_id==rst.getLong(1)){
-                    results.addTaggedUser(new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7)));
+                    UserInfo u = new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7));
+                    tp.addTaggedUser(u);
                 }else{
                     p_id=rst.getLong(1);
-                    results.add(new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4)));
+                    PhotoInfo p = new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(3),rst.getString(4)));
+                    tp= new TaggedPhotoInfo(p);
                 }
             }
 
@@ -308,6 +311,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * u2, 1597); PhotoInfo p = new PhotoInfo(167, 309, "www.photolink.net",
              * "Tragedy"); mp.addSharedPhoto(p); results.add(mp);
              */
+            
+
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
