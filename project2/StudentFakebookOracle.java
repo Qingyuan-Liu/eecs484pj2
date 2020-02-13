@@ -127,7 +127,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
             + "(" +"SELECT MAX(LENGTH(FIRST_NAME)) FROM "+UsersTable
             +" )" + " ORDER BY 1");
-        );
+        
         while (rst.next()){
             info.addLongName(rst.getString(1));
         }
@@ -136,7 +136,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
             + "(" + "SELECT MIN(LENGTH(FIRST_NAME)) FROM "+UsersTable
             +")"+ " ORDER BY 1");
-        );
+        
         while (rst.next()){
             info.addShortName(rst.getString(1));
         }
@@ -187,7 +187,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo(39, "Margaret", "Thatcher"); results.add(u1); results.add(u2);
              */
             ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + "WHERE USER_ID NOT IN" +
-            " ( SELECT USER1_ID FROM " +  FriendsTable  + " UNION " + "SELECT USER2_ID FROM " +  FriendsTable ")");
+            " ( SELECT USER1_ID FROM " +  FriendsTable  + " UNION " + "SELECT USER2_ID FROM " +  FriendsTable + ")");
             while(rst.next()){
                 result.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
             }
@@ -260,7 +260,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             "SELECT * FROM((SELECT T1.TAG_PHOTO_ID, COUNT(T1.TAG_SUBJECT_ID) AS C FROM "+ TagsTable + " T1 "+
             "GROUP BY T1.TAG_PHOTO_ID ORDER BY COUNT(T1.TAG_SUBJECT_ID) DESC, T1.TAG_PHOTO_ID) TMP) WHERE ROWNUM<= " + 
             num + ")" + "TMP1" + "WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
-            "ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID")
+            "ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
             
             List<Long> array = new ArrayList<Long> ();
             while(rst.next()){
@@ -462,8 +462,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
             FriendsTable +" F, " + UsersTable + " U1, " + UsersTable + " U2 " +
             " WHERE F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID AND (F.USER1_ID, F.USER2_ID) IN( SELECT U1.USER_ID, U2.USER_ID FROM " +
             UsersTable + " U1, " + UsersTable + " U2, " + HometownCitiesTable + " H1, " + HometownCitiesTable + " H2 "+
-            "WHERE U1.USER_ID <> U2.USER_ID AND U1.USER_ID = H1.USER_ID AND U2.USER_ID = H2.USER_ID AND H1.HOMETOWN_CITY_ID=H2.HOMETOWN_CITY_ID AND ABS(U1.YEAR_OF_BIRTH - U2.YEAR_OF_BIRTH) < 10
-            AND U1.LAST_NAME=U2.LAST_NAME AND U1.USER_ID < U2.USER_ID)")
+            "WHERE U1.USER_ID <> U2.USER_ID AND U1.USER_ID = H1.USER_ID AND U2.USER_ID = H2.USER_ID AND H1.HOMETOWN_CITY_ID=H2.HOMETOWN_CITY_ID AND ABS(U1.YEAR_OF_BIRTH - U2.YEAR_OF_BIRTH) < 10"+
+            "AND U1.LAST_NAME=U2.LAST_NAME AND U1.USER_ID < U2.USER_ID)");
 
             while(rst.next()){
                 UserInfo u1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
