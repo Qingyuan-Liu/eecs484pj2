@@ -186,7 +186,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo u1 = new UserInfo(15, "Abraham", "Lincoln"); UserInfo u2 = new
              * UserInfo(39, "Margaret", "Thatcher"); results.add(u1); results.add(u2);
              */
-            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + "WHERE USER_ID NOT IN" +
+            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + " WHERE USER_ID NOT IN " +
             " ( SELECT USER1_ID FROM " +  FriendsTable  + " UNION " + "SELECT USER2_ID FROM " +  FriendsTable + ")");
             while(rst.next()){
                 results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
