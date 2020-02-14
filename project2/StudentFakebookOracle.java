@@ -123,7 +123,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
            
         FirstNameInfo info = new FirstNameInfo();
         ResultSet rst = stmt.executeQuery(
-            "SELECT FIRST_NAME FROM "
+            "SELECT DISTINCT FIRST_NAME FROM "
             + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
             + " ( " +" SELECT MAX(LENGTH(FIRST_NAME)) FROM "+UsersTable
             +" ) " + " ORDER BY 1");
@@ -132,7 +132,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             info.addLongName(rst.getString(1));
         }
         rst= stmt.executeQuery(
-            "SELECT FIRST_NAME FROM "
+            "SELECT DISTINCT FIRST_NAME FROM "
             + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
             + "(" + " SELECT MIN(LENGTH(FIRST_NAME)) FROM "+UsersTable
             +") "+ " ORDER BY 1");
