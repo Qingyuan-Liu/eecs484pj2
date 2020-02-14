@@ -317,7 +317,13 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * u2, 1597); PhotoInfo p = new PhotoInfo(167, 309, "www.photolink.net",
              * "Tragedy"); mp.addSharedPhoto(p); results.add(mp);
              */
-            
+            ResultSet rst = stmt.executeQuery("SELECT U1.USER_ID, U2.USER_ID " + " FROM " + UsersTable + " U1, " +
+            UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2 " +
+            "WHERE U1.GENDER = U2.GENDER AND U1.USER.ID < U2.USER_ID AND ABS(U1.YEAR_OF_BIRTH-U2.YEAR_OF_BIRTH) <= "+
+            yearDiff + " AND NOT EXISTS( SELECT * FROM " + FriendsTable + " F " + " WHERE(F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID) " +
+            " OR (F.USER2_ID = U1.USER_ID AND F.USER1_ID = U2.USER_ID ))" + " AND U1.USER_ID =T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID "+
+            " T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND ROWNUM<=1 GROUP BY (U1.USER_ID, U2.USER_ID) ORDER BY COUNT(T1.TAG_PHOTO_ID) DESC, U1.USER_ID, U2.USER_ID"
+            )
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -419,10 +425,10 @@ public final class StudentFakebookOracle extends FakebookOracle {
             " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
              FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID) ORDER BY YEAR_OF_BIRTH DESC, MONTH_OF_BIRTH DESC, DAY_OF_BIRTH DESC, 1 DESC");
             
-             UserInfo old=null;
+             UserInfo young=null;
              while(rst.next()){
                  if(rst.isFirst()){
-                    old = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
+                    young = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                  }
                  break;
              }
@@ -431,10 +437,10 @@ public final class StudentFakebookOracle extends FakebookOracle {
             " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
              FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID) ORDER BY YEAR_OF_BIRTH, MONTH_OF_BIRTH, MONTH_OF_BIRTH, 1 DESC");
 
-             UserInfo youngest=null;
+             UserInfo old=null;
              while(rst.next()){
                 if(rst.isFirst()){
-                    youngest = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
+                    old = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                 }
                 break;
             }
@@ -442,7 +448,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             rst.close();
             stmt.close();
 
-            return new AgeInfo(old, youngest); // placeholder
+            return new AgeInfo(old, young); // placeholder
                                                                                                                         // for
                                                                                                                         // compilation
         } catch (SQLException e) {
