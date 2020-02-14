@@ -278,7 +278,9 @@ public final class StudentFakebookOracle extends FakebookOracle {
                     UserInfo u = new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7));
                     tp.addTaggedUser(u);
                 }
-                
+                if(rst.isLast()){
+                    results.add(tp);
+                }
             }
 
             rst.close();
