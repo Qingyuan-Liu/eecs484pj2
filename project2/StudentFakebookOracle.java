@@ -383,7 +383,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             rst=stmt.executeQuery("SELECT C.STATE_NAME FROM "+ EventsTable +" E, " + CitiesTable + " C "+
             "WHERE E.EVENT_CITY_ID = C.CITY_ID "+
             "GROUP BY C.STATE_NAME "+
-            "HAVING COUNT(*)=" + maxCount);
+            " HAVING COUNT(*)=" + maxCount + "ORDER BY 1");
 
             while(rst.next()){
                 info.addState(rst.getString(1));
