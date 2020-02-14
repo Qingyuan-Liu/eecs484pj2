@@ -323,7 +323,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
             yearDiff + " AND NOT EXISTS( SELECT * FROM " + FriendsTable + " F " + " WHERE(F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID) " +
             " OR (F.USER2_ID = U1.USER_ID AND F.USER1_ID = U2.USER_ID ))" + " AND U1.USER_ID =T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID "+
             " T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND ROWNUM<=1 GROUP BY (U1.USER_ID, U2.USER_ID) ORDER BY COUNT(T1.TAG_PHOTO_ID) DESC, U1.USER_ID, U2.USER_ID"
-            )
+            );
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
