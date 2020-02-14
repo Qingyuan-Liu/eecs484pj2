@@ -317,13 +317,28 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * u2, 1597); PhotoInfo p = new PhotoInfo(167, 309, "www.photolink.net",
              * "Tragedy"); mp.addSharedPhoto(p); results.add(mp);
              */
-            ResultSet rst = stmt.executeQuery("SELECT U1.USER_ID, U2.USER_ID " + " FROM " + UsersTable + " U1, " +
-            UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2 " +
-            "WHERE U1.GENDER = U2.GENDER AND U1.USER.ID < U2.USER_ID AND ABS(U1.YEAR_OF_BIRTH-U2.YEAR_OF_BIRTH) <= "+
-            yearDiff + " AND NOT EXISTS( SELECT * FROM " + FriendsTable + " F " + " WHERE(F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID) " +
-            " OR (F.USER2_ID = U1.USER_ID AND F.USER1_ID = U2.USER_ID ))" + " AND U1.USER_ID =T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID "+
-            " T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND ROWNUM<=1 GROUP BY (U1.USER_ID, U2.USER_ID) ORDER BY COUNT(T1.TAG_PHOTO_ID) DESC, U1.USER_ID, U2.USER_ID"
-            );
+            ResultSet rst = stmt.executeQuery("SELECT U1.USER_ID, U1.FIRST_NAME, U2.USER_ID, U2.FIRST_NAME, U2.LAST_NAME, T1.TAG_PHOTO_ID, P.PHOTO_LINK, A.ALBUM_ID, A.ALBUM_NAME, U1.YEAR_OF_BIRTH, U2.YEAR_OF_BIRTH " + 
+            " FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " + AlbumsTable + " A, " + PhotosTable + " P, " + 
+            "(SELECT U1.USER_ID AS USER1ID, U2.USER_ID AS USER2ID FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " +
+            AlbumsTable + " A, " + PhotosTable + " P " + " WHERE U1.GENDER = U2.GENDER AND U1.USER_ID < U2.USER_ID AND ABS(U1.YEAR_OF_BIRTH-U2.YEAR_OF_BIRTH) <= "+
+            yearDiff + " AND NOT EXISTS( SELECT * FROM " + FriendsTable + " F " + " WHERE(F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID) ) " +
+            " AND U1.USER_ID = T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID AND T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND ROWNUM <= 1 "+
+            " GROUP BY (U1.USER_ID, U2.USER_ID) " + " ORDER BY COUNT(T1.TAG_PHOTO_ID) DESC, U1.USER_ID, U2.USER_ID) TMP " +
+            " WHERE U1.USER_ID = T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID AND T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND A.ALBUM_ID = P.ALBUM_ID AND T1.TAG_PHOTO_ID = P.PHOTO_ID "+
+            " U1.USER_ID = TMP.USER1ID AND U2.USRE_ID = TMP.USER2ID");
+            
+
+            while(rst.next()){
+                UserInfo U1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
+                UserInfo U2 = new UserInfo(rst.getLong(4), rst.getString(5), rst.getString(6));
+                PhotoInfo p = new PhotoInfo(rst.getLong(7), rst.getLong(9), rst.getString(8), rst.getString(9));
+                MatchPair mp = new MatchPair(U1, rst.getLong(10), U2, rst.getLong(11));  
+                mp.addSharedPhoto(p);
+                results.add(mp);  
+            }
+
+            rst.close();
+            stmt.close();
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
