@@ -317,7 +317,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * u2, 1597); PhotoInfo p = new PhotoInfo(167, 309, "www.photolink.net",
              * "Tragedy"); mp.addSharedPhoto(p); results.add(mp);
              */
-            ResultSet rst = stmt.executeQuery("SELECT U1.USER_ID, U1.FIRST_NAME, U2.USER_ID, U2.FIRST_NAME, U2.LAST_NAME, T1.TAG_PHOTO_ID, P.PHOTO_LINK, A.ALBUM_ID, A.ALBUM_NAME, U1.YEAR_OF_BIRTH, U2.YEAR_OF_BIRTH " + 
+            ResultSet rst = stmt.executeQuery("SELECT U1.USER_ID, U1.FIRST_NAME, U1.LAST_NAME, U2.USER_ID, U2.FIRST_NAME, U2.LAST_NAME, T1.TAG_PHOTO_ID, P.PHOTO_LINK, A.ALBUM_ID, A.ALBUM_NAME, U1.YEAR_OF_BIRTH, U2.YEAR_OF_BIRTH " + 
             " FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " + AlbumsTable + " A, " + PhotosTable + " P, " + 
             "(SELECT U1.USER_ID AS USER1ID, U2.USER_ID AS USER2ID FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " +
             AlbumsTable + " A, " + PhotosTable + " P " + " WHERE U1.GENDER = U2.GENDER AND U1.USER_ID < U2.USER_ID AND ABS(U1.YEAR_OF_BIRTH-U2.YEAR_OF_BIRTH) <= "+
@@ -331,8 +331,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
             while(rst.next()){
                 UserInfo U1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                 UserInfo U2 = new UserInfo(rst.getLong(4), rst.getString(5), rst.getString(6));
-                PhotoInfo p = new PhotoInfo(rst.getLong(7), rst.getLong(9), rst.getString(8), rst.getString(9));
-                MatchPair mp = new MatchPair(U1, rst.getLong(10), U2, rst.getLong(11));  
+                PhotoInfo p = new PhotoInfo(rst.getLong(7), rst.getLong(9), rst.getString(8), rst.getString(10));
+                MatchPair mp = new MatchPair(U1, rst.getLong(11), U2, rst.getLong(12));  
                 mp.addSharedPhoto(p);
                 results.add(mp);  
             }
