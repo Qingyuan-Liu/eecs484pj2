@@ -371,7 +371,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
              */
 
             ResultSet rst = stmt.executeQuery("SELECT MAX(COUNT(C.STATE_NAME)) "+"FROM "+
-            CurrentCitiesTable + " C," + EventsTable + " E "+
+            CurrentCitiesTable + " C, " + EventsTable + " E "+
             "WHERE C.CITY_ID = E.EVENT_CITY_ID "+" GROUP BY C.STATE_NAME");
             
             int maxCount=0;
