@@ -438,7 +438,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
              */
             ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME"+
             " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
-             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID) ORDER BY YEAR_OF_BIRTH DESC, MONTH_OF_BIRTH DESC, DAY_OF_BIRTH DESC, 1 DESC");
+             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID UNION SELECT F.USER1_ID FROM " + UsersTable + " U, " +
+             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER2_ID = U.USER_ID ) ORDER BY YEAR_OF_BIRTH DESC, MONTH_OF_BIRTH DESC, DAY_OF_BIRTH DESC, 1 DESC");
             
              UserInfo young=null;
              while(rst.next()){
@@ -450,7 +451,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
 
             rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+
             " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
-             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID) ORDER BY YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH, 1 DESC");
+             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID UNION SELECT F.USER1_ID FROM " + UsersTable + " U, " +
+             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER2_ID = U.USER_ID ) ORDER BY YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH, 1 DESC");
 
              UserInfo old=null;
              while(rst.next()){
