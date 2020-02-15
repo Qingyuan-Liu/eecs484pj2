@@ -120,47 +120,40 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * info.addCommonName("Harold"); info.addCommonName("Jessica");
              * info.setCommonNameCount(42); return info;
              */
-           
-        FirstNameInfo info = new FirstNameInfo();
-        ResultSet rst = stmt.executeQuery(
-            "SELECT DISTINCT FIRST_NAME FROM "
-            + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
-            + " ( " +" SELECT MAX(LENGTH(FIRST_NAME)) FROM "+UsersTable
-            +" ) " + " ORDER BY 1");
-        
-        while (rst.next()){
-            info.addLongName(rst.getString(1));
-        }
-        rst= stmt.executeQuery(
-            "SELECT DISTINCT FIRST_NAME FROM "
-            + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
-            + "(" + " SELECT MIN(LENGTH(FIRST_NAME)) FROM "+UsersTable
-            +") "+ " ORDER BY 1");
-        
-        while (rst.next()){
-            info.addShortName(rst.getString(1));
-        }
 
-        rst = stmt.executeQuery(
-            "SELECT MAX(COUNT(FIRST_NAME)) FROM "+
-            UsersTable + " GROUP BY FIRST_NAME"
-        );
-        int maxNum = 0;
-        while (rst.next())  {
-            maxNum = rst.getInt(1);
-        }
-        info.setCommonNameCount(maxNum);
-        
-        String query = String.format("SELECT FIRST_NAME FROM "+UsersTable+" GROUP BY FIRST_NAME HAVING COUNT(*) = %d",maxNum);
-        rst = stmt.executeQuery(query);
-        while (rst.next()) {
-            info.addCommonName(rst.getString(1));
-        }
+            FirstNameInfo info = new FirstNameInfo();
+            ResultSet rst = stmt
+                    .executeQuery("SELECT DISTINCT FIRST_NAME FROM " + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
+                            + " ( " + " SELECT MAX(LENGTH(FIRST_NAME)) FROM " + UsersTable + " ) " + " ORDER BY 1");
 
-        rst.close();
-        stmt.close();
+            while (rst.next()) {
+                info.addLongName(rst.getString(1));
+            }
+            rst = stmt.executeQuery("SELECT DISTINCT FIRST_NAME FROM " + UsersTable + " WHERE LENGTH(FIRST_NAME) IN"
+                    + "(" + " SELECT MIN(LENGTH(FIRST_NAME)) FROM " + UsersTable + ") " + " ORDER BY 1");
 
-        return info;
+            while (rst.next()) {
+                info.addShortName(rst.getString(1));
+            }
+
+            rst = stmt.executeQuery("SELECT MAX(COUNT(FIRST_NAME)) FROM " + UsersTable + " GROUP BY FIRST_NAME");
+            int maxNum = 0;
+            while (rst.next()) {
+                maxNum = rst.getInt(1);
+            }
+            info.setCommonNameCount(maxNum);
+
+            String query = String.format(
+                    "SELECT FIRST_NAME FROM " + UsersTable + " GROUP BY FIRST_NAME HAVING COUNT(*) = %d", maxNum);
+            rst = stmt.executeQuery(query);
+            while (rst.next()) {
+                info.addCommonName(rst.getString(1));
+            }
+
+            rst.close();
+            stmt.close();
+
+            return info;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             return new FirstNameInfo();
@@ -186,10 +179,11 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo u1 = new UserInfo(15, "Abraham", "Lincoln"); UserInfo u2 = new
              * UserInfo(39, "Margaret", "Thatcher"); results.add(u1); results.add(u2);
              */
-            ResultSet rst = stmt.executeQuery("SELECT DISTINCT USER_ID, FIRST_NAME, LAST_NAME "+ "FROM "+ UsersTable + " WHERE USER_ID NOT IN " +
-            " ( SELECT USER1_ID FROM " +  FriendsTable  + " UNION " + "SELECT USER2_ID FROM " +  FriendsTable + ")");
-            while(rst.next()){
-                results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
+            ResultSet rst = stmt.executeQuery("SELECT DISTINCT USER_ID, FIRST_NAME, LAST_NAME " + "FROM " + UsersTable
+                    + " WHERE USER_ID NOT IN " + " ( SELECT USER1_ID FROM " + FriendsTable + " UNION "
+                    + "SELECT USER2_ID FROM " + FriendsTable + ")");
+            while (rst.next()) {
+                results.add(new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3)));
             }
 
             rst.close();
@@ -197,7 +191,7 @@ public final class StudentFakebookOracle extends FakebookOracle {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-        
+
         return results;
     }
 
@@ -217,11 +211,13 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo u1 = new UserInfo(9, "Meryl", "Streep"); UserInfo u2 = new
              * UserInfo(104, "Tom", "Hanks"); results.add(u1); results.add(u2);
              */
-            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME" + " FROM " + UsersTable  + " MINUS " + " SELECT U.USER_ID, " + " U.FIRST_NAME, " + "U.LAST_NAME " +
-            "FROM "+ CurrentCitiesTable + " P1, " +  HometownCitiesTable +" P2, " + UsersTable + " U " + " WHERE P1.USER_ID = P2.USER_ID AND U.USER_ID = P1.USER_ID AND P1.CURRENT_CITY_ID=P2.HOMETOWN_CITY_ID ORDER BY 1");
-            
-            while(rst.next()){
-                results.add(new UserInfo(rst.getLong(1),rst.getString(2),rst.getString(3)));
+            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME" + " FROM " + UsersTable
+                    + " MINUS " + " SELECT U.USER_ID, " + " U.FIRST_NAME, " + "U.LAST_NAME " + "FROM "
+                    + CurrentCitiesTable + " P1, " + HometownCitiesTable + " P2, " + UsersTable + " U "
+                    + " WHERE P1.USER_ID = P2.USER_ID AND U.USER_ID = P1.USER_ID AND P1.CURRENT_CITY_ID=P2.HOMETOWN_CITY_ID ORDER BY 1");
+
+            while (rst.next()) {
+                results.add(new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3)));
             }
             rst.close();
             stmt.close();
@@ -255,30 +251,33 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * "Stark"); TaggedPhotoInfo tp = new TaggedPhotoInfo(p); tp.addTaggedUser(u1);
              * tp.addTaggedUser(u2); tp.addTaggedUser(u3); results.add(tp);
              */
-            ResultSet rst = stmt.executeQuery("SELECT P.PHOTO_ID, P.ALBUM_ID, A.ALBUM_NAME, P.PHOTO_LINK, U.USER_ID, U.FIRST_NAME, U.LAST_NAME "+
-            "FROM " + PhotosTable +" P, " + AlbumsTable +" A, " + TagsTable + " T2, " + UsersTable + " U, "+
-            "(SELECT * FROM((SELECT T1.TAG_PHOTO_ID, COUNT(T1.TAG_SUBJECT_ID) AS C FROM "+ TagsTable + " T1 "+
-            "GROUP BY T1.TAG_PHOTO_ID ORDER BY COUNT(T1.TAG_SUBJECT_ID) DESC, T1.TAG_PHOTO_ID) TMP) WHERE ROWNUM<= " + 
-            num + ")" + " TMP1 " + " WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "+
-            " ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
-            
-            TaggedPhotoInfo tp=null;
-            long p_id=0;
-            while(rst.next()){
-                if(p_id==rst.getLong(1)){
-                    UserInfo u = new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7));
+            ResultSet rst = stmt.executeQuery(
+                    "SELECT P.PHOTO_ID, P.ALBUM_ID, A.ALBUM_NAME, P.PHOTO_LINK, U.USER_ID, U.FIRST_NAME, U.LAST_NAME "
+                            + "FROM " + PhotosTable + " P, " + AlbumsTable + " A, " + TagsTable + " T2, " + UsersTable
+                            + " U, " + "(SELECT * FROM((SELECT T1.TAG_PHOTO_ID, COUNT(T1.TAG_SUBJECT_ID) AS C FROM "
+                            + TagsTable + " T1 "
+                            + "GROUP BY T1.TAG_PHOTO_ID ORDER BY COUNT(T1.TAG_SUBJECT_ID) DESC, T1.TAG_PHOTO_ID) TMP) WHERE ROWNUM<= "
+                            + num + ")" + " TMP1 "
+                            + " WHERE P.PHOTO_ID=T2.TAG_PHOTO_ID AND P.ALBUM_ID=A.ALBUM_ID AND T2.TAG_SUBJECT_ID=U.USER_ID AND T2.TAG_PHOTO_ID=TMP1.TAG_PHOTO_ID "
+                            + " ORDER BY TMP1.C, P.PHOTO_ID, U.USER_ID");
+
+            TaggedPhotoInfo tp = null;
+            long p_id = 0;
+            while (rst.next()) {
+                if (p_id == rst.getLong(1)) {
+                    UserInfo u = new UserInfo(rst.getLong(5), rst.getString(6), rst.getString(7));
                     tp.addTaggedUser(u);
-                }else{
-                    if(tp != null){
+                } else {
+                    if (tp != null) {
                         results.add(tp);
-                    }   
-                    p_id=rst.getLong(1);
-                    PhotoInfo p = new PhotoInfo(rst.getLong(1),rst.getLong(2),rst.getString(4),rst.getString(3));
-                    tp= new TaggedPhotoInfo(p);
-                    UserInfo u = new UserInfo(rst.getLong(5),rst.getString(6),rst.getString(7));
+                    }
+                    p_id = rst.getLong(1);
+                    PhotoInfo p = new PhotoInfo(rst.getLong(1), rst.getLong(2), rst.getString(4), rst.getString(3));
+                    tp = new TaggedPhotoInfo(p);
+                    UserInfo u = new UserInfo(rst.getLong(5), rst.getString(6), rst.getString(7));
                     tp.addTaggedUser(u);
                 }
-                if(rst.isLast()){
+                if (rst.isLast()) {
                     results.add(tp);
                 }
             }
@@ -319,24 +318,29 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * u2, 1597); PhotoInfo p = new PhotoInfo(167, 309, "www.photolink.net",
              * "Tragedy"); mp.addSharedPhoto(p); results.add(mp);
              */
-            ResultSet rst = stmt.executeQuery("SELECT U1.USER_ID, U1.FIRST_NAME, U1.LAST_NAME, U2.USER_ID, U2.FIRST_NAME, U2.LAST_NAME, T1.TAG_PHOTO_ID, P.PHOTO_LINK, A.ALBUM_ID, A.ALBUM_NAME, U1.YEAR_OF_BIRTH, U2.YEAR_OF_BIRTH " + 
-            " FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " + AlbumsTable + " A, " + PhotosTable + " P, " + 
-            "(SELECT U1.USER_ID AS USER1ID, U2.USER_ID AS USER2ID FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " +
-            AlbumsTable + " A, " + PhotosTable + " P " + " WHERE U1.GENDER = U2.GENDER AND U1.USER_ID < U2.USER_ID AND ABS(U1.YEAR_OF_BIRTH-U2.YEAR_OF_BIRTH) <= "+
-            yearDiff + " AND NOT EXISTS( SELECT * FROM " + FriendsTable + " F " + " WHERE(F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID) ) " +
-            " AND U1.USER_ID = T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID AND T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND ROWNUM <= 1 "+
-            " GROUP BY (U1.USER_ID, U2.USER_ID) " + " ORDER BY COUNT(T1.TAG_PHOTO_ID) DESC, U1.USER_ID, U2.USER_ID) TMP " +
-            " WHERE U1.USER_ID = T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID AND T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND A.ALBUM_ID = P.ALBUM_ID AND T1.TAG_PHOTO_ID = P.PHOTO_ID "+
-            " AND U1.USER_ID = TMP.USER1ID AND U2.USER_ID = TMP.USER2ID");
-            
+            ResultSet rst = stmt.executeQuery(
+                    "SELECT U1.USER_ID, U1.FIRST_NAME, U1.LAST_NAME, U2.USER_ID, U2.FIRST_NAME, U2.LAST_NAME, T1.TAG_PHOTO_ID, P.PHOTO_LINK, A.ALBUM_ID, A.ALBUM_NAME, U1.YEAR_OF_BIRTH, U2.YEAR_OF_BIRTH "
+                            + " FROM " + UsersTable + " U1, " + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable
+                            + " T2, " + AlbumsTable + " A, " + PhotosTable + " P, "
+                            + "(SELECT U1.USER_ID AS USER1ID, U2.USER_ID AS USER2ID FROM " + UsersTable + " U1, "
+                            + UsersTable + " U2, " + TagsTable + " T1, " + TagsTable + " T2, " + AlbumsTable + " A, "
+                            + PhotosTable + " P "
+                            + " WHERE U1.GENDER = U2.GENDER AND U1.USER_ID < U2.USER_ID AND ABS(U1.YEAR_OF_BIRTH-U2.YEAR_OF_BIRTH) <= "
+                            + yearDiff + " AND NOT EXISTS( SELECT * FROM " + FriendsTable + " F "
+                            + " WHERE(F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID) ) "
+                            + " AND U1.USER_ID = T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID AND T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND ROWNUM <= 1 "
+                            + " GROUP BY (U1.USER_ID, U2.USER_ID) "
+                            + " ORDER BY COUNT(T1.TAG_PHOTO_ID) DESC, U1.USER_ID, U2.USER_ID) TMP "
+                            + " WHERE U1.USER_ID = T1.TAG_SUBJECT_ID AND U2.USER_ID = T2.TAG_SUBJECT_ID AND T1.TAG_PHOTO_ID = T2.TAG_PHOTO_ID AND A.ALBUM_ID = P.ALBUM_ID AND T1.TAG_PHOTO_ID = P.PHOTO_ID "
+                            + " AND U1.USER_ID = TMP.USER1ID AND U2.USER_ID = TMP.USER2ID");
 
-            while(rst.next()){
+            while (rst.next()) {
                 UserInfo U1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                 UserInfo U2 = new UserInfo(rst.getLong(4), rst.getString(5), rst.getString(6));
                 PhotoInfo p = new PhotoInfo(rst.getLong(7), rst.getLong(9), rst.getString(8), rst.getString(10));
-                MatchPair mp = new MatchPair(U1, rst.getLong(11), U2, rst.getLong(12));  
+                MatchPair mp = new MatchPair(U1, rst.getLong(11), U2, rst.getLong(12));
                 mp.addSharedPhoto(p);
-                results.add(mp);  
+                results.add(mp);
             }
 
             rst.close();
@@ -371,6 +375,41 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * "Le Boid"); UsersPair up = new UsersPair(u1, u2); up.addSharedFriend(u3);
              * results.add(up);
              */
+            ResultSet rst = stmt.executeQuery(
+                    "SELECT U1.USER_ID,U1.FIRST_NAME,U1.LAST_NAME,U2.USER_ID,U2.FIRST_NAME,U2.LAST_NAME FROM "
+                            + "(SELECT F1.USER1_ID AS CAND1,F2.USER1_ID AS CAND2,COUNT(F1.USER2_ID) AS CNT FROM "
+                            + "(SELECT * FROM " + FriendsTable + " UNION SELECT USER2_ID,USER1_ID FROM " + FriendsTable
+                            + ") F1 JOIN " + "(SELECT * FROM " + FriendsTable + " UNION SELECT USER2_ID,USER1_ID FROM "
+                            + FriendsTable + ") F2 ON F1.USER2_ID=F2.USER2_ID WHERE F1.USER1_ID<F2.USER1_ID AND "
+                            + "NOT EXISTS (SELECT * FROM (SELECT * FROM " + FriendsTable
+                            + " UNION SELECT USER2_ID,USER1_ID FROM " + FriendsTable + ") F3 "
+                            + "WHERE F3.USER1_ID=F1.USER1_ID AND F3.USER2_ID=F2.USER1_ID) GROUP BY (F1.USER1_ID,F2.USER1_ID) ORDER BY COUNT(F1.USER2_ID) DESC,F1.USER1_ID,F2.USER1_ID FETCH FIRST "
+                            + num + " ROWS ONLY) TMP JOIN " + UsersTable + " U1 ON TMP.CAND1=U1.USER_ID JOIN "
+                            + UsersTable + " U2 ON TMP.CAND2=U2.USER_ID ORDER BY TMP.CNT DESC, U1.USER_ID, U2.USER_ID");
+            System.out.println("hello");
+            while (rst.next()) {
+                long tmp1 = rst.getLong(1);
+                long tmp2 = rst.getLong(4);
+                UserInfo u1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
+                UserInfo u2 = new UserInfo(rst.getLong(4), rst.getString(5), rst.getString(6));
+                UsersPair up = new UsersPair(u1, u2);
+                Statement stmt2 = oracle.createStatement(FakebookOracleConstants.AllScroll,
+                        FakebookOracleConstants.ReadOnly);
+                ResultSet rst2 = stmt2.executeQuery("SELECT U3.USER_ID,U3.FIRST_NAME,U3.LAST_NAME FROM (SELECT * FROM "
+                        + FriendsTable + " WHERE USER1_ID=" + tmp1 + " UNION SELECT USER2_ID,USER1_ID FROM "
+                        + FriendsTable + " WHERE USER2_ID=" + tmp1 + ") F1 JOIN " + "(SELECT * FROM " + FriendsTable
+                        + " WHERE USER1_ID=" + tmp2 + " UNION SELECT USER2_ID,USER1_ID FROM " + FriendsTable
+                        + " WHERE USER2_ID=" + tmp2 + ") F2 ON F1.USER2_ID=F2.USER2_ID JOIN " + UsersTable
+                        + " U3 ON U3.USER_ID=F1.USER2_ID ORDER BY U3.USER_ID");
+                while (rst2.next()) {
+                    up.addSharedFriend(new UserInfo(rst2.getLong(1), rst2.getString(2), rst2.getString(3)));
+                }
+                results.add(up);
+                rst2.close();
+                stmt2.close();
+            }
+            rst.close();
+            stmt.close();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -387,33 +426,31 @@ public final class StudentFakebookOracle extends FakebookOracle {
     public EventStateInfo findEventStates() throws SQLException {
         try (Statement stmt = oracle.createStatement(FakebookOracleConstants.AllScroll,
                 FakebookOracleConstants.ReadOnly)) {
-             /*
+            /*
              * EXAMPLE DATA STRUCTURE USAGE ============================================
              * EventStateInfo info = new EventStateInfo(50); info.addState("Kentucky");
              * info.addState("Hawaii"); info.addState("New Hampshire"); return info;
              */
 
-            ResultSet rst = stmt.executeQuery("SELECT MAX(COUNT(C.STATE_NAME)) "+"FROM "+
-            CitiesTable + " C, " + EventsTable + " E "+
-            "WHERE C.CITY_ID = E.EVENT_CITY_ID "+" GROUP BY C.STATE_NAME");
-            
-            int maxCount=0;
-            while(rst.next()){
-                maxCount=rst.getInt(1);
+            ResultSet rst = stmt.executeQuery("SELECT MAX(COUNT(C.STATE_NAME)) " + "FROM " + CitiesTable + " C, "
+                    + EventsTable + " E " + "WHERE C.CITY_ID = E.EVENT_CITY_ID " + " GROUP BY C.STATE_NAME");
+
+            int maxCount = 0;
+            while (rst.next()) {
+                maxCount = rst.getInt(1);
             }
             EventStateInfo info = new EventStateInfo(maxCount);
 
-            rst=stmt.executeQuery("SELECT C.STATE_NAME FROM "+ EventsTable +" E, " + CitiesTable + " C "+
-            " WHERE E.EVENT_CITY_ID = C.CITY_ID "+
-            " GROUP BY C.STATE_NAME "+
-            " HAVING COUNT(*)= " + maxCount + " ORDER BY 1");
+            rst = stmt.executeQuery("SELECT C.STATE_NAME FROM " + EventsTable + " E, " + CitiesTable + " C "
+                    + " WHERE E.EVENT_CITY_ID = C.CITY_ID " + " GROUP BY C.STATE_NAME " + " HAVING COUNT(*)= "
+                    + maxCount + " ORDER BY 1");
 
-            while(rst.next()){
+            while (rst.next()) {
                 info.addState(rst.getString(1));
-            }      
+            }
             rst.close();
             stmt.close();
-            return info; 
+            return info;
 
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -438,27 +475,29 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * new UserInfo(80000000, "Neil", "deGrasse Tyson"); return new AgeInfo(old,
              * young);
              */
-            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME"+
-            " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
-             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID UNION SELECT F.USER1_ID FROM " + UsersTable + " U, " +
-             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER2_ID = U.USER_ID ) ORDER BY YEAR_OF_BIRTH DESC, MONTH_OF_BIRTH DESC, DAY_OF_BIRTH DESC, 1 DESC");
-            
-             UserInfo young=null;
-             while(rst.next()){
-                 if(rst.isFirst()){
+            ResultSet rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME" + " FROM " + UsersTable
+                    + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " + FriendsTable
+                    + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID UNION SELECT F.USER1_ID FROM "
+                    + UsersTable + " U, " + FriendsTable + " F WHERE U.USER_ID =" + userID
+                    + " AND F.USER2_ID = U.USER_ID ) ORDER BY YEAR_OF_BIRTH DESC, MONTH_OF_BIRTH DESC, DAY_OF_BIRTH DESC, 1 DESC");
+
+            UserInfo young = null;
+            while (rst.next()) {
+                if (rst.isFirst()) {
                     young = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
-                 }
-                 break;
-             }
+                }
+                break;
+            }
 
-            rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME "+
-            " FROM " + UsersTable + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " +
-             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID UNION SELECT F.USER1_ID FROM " + UsersTable + " U, " +
-             FriendsTable + " F WHERE U.USER_ID =" + userID + " AND F.USER2_ID = U.USER_ID ) ORDER BY YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH, 1 DESC");
+            rst = stmt.executeQuery("SELECT USER_ID, FIRST_NAME, LAST_NAME " + " FROM " + UsersTable
+                    + " WHERE USER_ID IN( SELECT F.USER2_ID FROM " + UsersTable + " U, " + FriendsTable
+                    + " F WHERE U.USER_ID =" + userID + " AND F.USER1_ID = U.USER_ID UNION SELECT F.USER1_ID FROM "
+                    + UsersTable + " U, " + FriendsTable + " F WHERE U.USER_ID =" + userID
+                    + " AND F.USER2_ID = U.USER_ID ) ORDER BY YEAR_OF_BIRTH, MONTH_OF_BIRTH, DAY_OF_BIRTH, 1 DESC");
 
-             UserInfo old=null;
-             while(rst.next()){
-                if(rst.isFirst()){
+            UserInfo old = null;
+            while (rst.next()) {
+                if (rst.isFirst()) {
                     old = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                 }
                 break;
@@ -468,8 +507,8 @@ public final class StudentFakebookOracle extends FakebookOracle {
             stmt.close();
 
             return new AgeInfo(old, young); // placeholder
-                                                                                                                        // for
-                                                                                                                        // compilation
+                                            // for
+                                            // compilation
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             return new AgeInfo(new UserInfo(-1, "ERROR", "ERROR"), new UserInfo(-1, "ERROR", "ERROR"));
@@ -495,14 +534,16 @@ public final class StudentFakebookOracle extends FakebookOracle {
              * UserInfo(17231, "Kourtney", "Kardashian"); SiblingInfo si = new
              * SiblingInfo(u1, u2); results.add(si);
              */
-            ResultSet rst = stmt.executeQuery("SELECT F.USER1_ID, U1.FIRST_NAME, U1.LAST_NAME, F.USER2_ID, U2.FIRST_NAME, U2.LAST_NAME "+ "FROM "+
-            FriendsTable +" F, " + UsersTable + " U1, " + UsersTable + " U2 " +
-            " WHERE F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID AND (F.USER1_ID, F.USER2_ID) IN( SELECT U1.USER_ID, U2.USER_ID FROM " +
-            UsersTable + " U1, " + UsersTable + " U2, " + HometownCitiesTable + " H1, " + HometownCitiesTable + " H2 "+
-            "WHERE U1.USER_ID <> U2.USER_ID AND U1.USER_ID = H1.USER_ID AND U2.USER_ID = H2.USER_ID AND H1.HOMETOWN_CITY_ID=H2.HOMETOWN_CITY_ID AND ABS(U1.YEAR_OF_BIRTH - U2.YEAR_OF_BIRTH) < 10"+
-            "AND U1.LAST_NAME=U2.LAST_NAME AND U1.USER_ID < U2.USER_ID)");
+            ResultSet rst = stmt.executeQuery(
+                    "SELECT F.USER1_ID, U1.FIRST_NAME, U1.LAST_NAME, F.USER2_ID, U2.FIRST_NAME, U2.LAST_NAME " + "FROM "
+                            + FriendsTable + " F, " + UsersTable + " U1, " + UsersTable + " U2 "
+                            + " WHERE F.USER1_ID = U1.USER_ID AND F.USER2_ID = U2.USER_ID AND (F.USER1_ID, F.USER2_ID) IN( SELECT U1.USER_ID, U2.USER_ID FROM "
+                            + UsersTable + " U1, " + UsersTable + " U2, " + HometownCitiesTable + " H1, "
+                            + HometownCitiesTable + " H2 "
+                            + "WHERE U1.USER_ID <> U2.USER_ID AND U1.USER_ID = H1.USER_ID AND U2.USER_ID = H2.USER_ID AND H1.HOMETOWN_CITY_ID=H2.HOMETOWN_CITY_ID AND ABS(U1.YEAR_OF_BIRTH - U2.YEAR_OF_BIRTH) < 10"
+                            + "AND U1.LAST_NAME=U2.LAST_NAME AND U1.USER_ID < U2.USER_ID)");
 
-            while(rst.next()){
+            while (rst.next()) {
                 UserInfo u1 = new UserInfo(rst.getLong(1), rst.getString(2), rst.getString(3));
                 UserInfo u2 = new UserInfo(rst.getLong(4), rst.getString(5), rst.getString(6));
                 SiblingInfo si = new SiblingInfo(u1, u2);
