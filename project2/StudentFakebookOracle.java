@@ -386,7 +386,6 @@ public final class StudentFakebookOracle extends FakebookOracle {
                             + "WHERE F3.USER1_ID=F1.USER1_ID AND F3.USER2_ID=F2.USER1_ID) GROUP BY (F1.USER1_ID,F2.USER1_ID) ORDER BY COUNT(F1.USER2_ID) DESC,F1.USER1_ID,F2.USER1_ID FETCH FIRST "
                             + num + " ROWS ONLY) TMP JOIN " + UsersTable + " U1 ON TMP.CAND1=U1.USER_ID JOIN "
                             + UsersTable + " U2 ON TMP.CAND2=U2.USER_ID ORDER BY TMP.CNT DESC, U1.USER_ID, U2.USER_ID");
-            System.out.println("hello");
             while (rst.next()) {
                 long tmp1 = rst.getLong(1);
                 long tmp2 = rst.getLong(4);
